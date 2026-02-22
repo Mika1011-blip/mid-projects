@@ -1,0 +1,126 @@
+<mxfile host="65bd71144e">
+    <diagram id="backend-modules" name="Backend Modules">
+        <mxGraphModel dx="772" dy="628" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="client" value="Client (Browser / Frontend)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="60" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="uvicorn" value="Uvicorn Server&#xa;:8000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="60" width="170" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="main" value="app/main.py&#xa;FastAPI app" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="60" width="190" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="v1router" value="app/api/v1/router.py&#xa;Router hub" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="60" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="routes" value="app/api/v1/routes/*&#xa;HTTP endpoints" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="160" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="schemas" value="app/schemas/*&lt;br&gt;Pydantic models&lt;div&gt;(data validation)&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="165" width="190" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="services" value="app/services/*&#xa;Business logic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="780" y="280" width="220" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="utils" value="app/utils/*&#xa;helpers (image/fs/etc)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="285" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="core" value="app/core/*&#xa;config + logging" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="410" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="db" value="PostgreSQL + pgvector" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="410" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="storage" value="Object Storage&#xa;(S3/MinIO)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="410" width="180" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" value="HTTP" style="endArrow=block;html=1;" parent="1" source="client" target="uvicorn" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" value="" style="endArrow=block;html=1;" parent="1" source="uvicorn" target="main" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" value="include_router&#xa;/api/v1" style="endArrow=block;html=1;" parent="1" source="main" target="v1router" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" value="" style="endArrow=block;html=1;" parent="1" source="v1router" target="routes" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5" value="uses" style="endArrow=block;html=1;" parent="1" source="routes" target="schemas" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6" value="calls" style="endArrow=block;html=1;" parent="1" source="routes" target="services" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e7" value="uses" style="endArrow=block;html=1;" parent="1" source="services" target="utils" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e8" value="reads" style="endArrow=block;html=1;" parent="1" source="services" target="core" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e9" value="SQL" style="endArrow=block;html=1;" parent="1" source="services" target="db" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e10" value="files" style="endArrow=block;html=1;" parent="1" source="services" target="storage" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="frontend-modules" name="Frontend Modules">
+        <mxGraphModel dx="1544" dy="1256" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="user" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="60" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ui" value="React UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="220" y="60" width="140" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="main" value="src/main.tsx&#xa;bootstrap" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="60" width="180" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="app" value="src/App.tsx&#xa;layout" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="660" y="60" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="features" value="src/features/*&#xa;feature modules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="160" width="200" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="components" value="src/components/ui/*&#xa;reusable UI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="370" y="160" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="client" value="src/api/client.ts&#xa;fetch wrapper" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="280" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="backend" value="Backend API&#xa;(FastAPI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="900" y="280" width="160" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe1" value="actions" style="endArrow=block;html=1;" parent="1" source="user" target="ui" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe2" value="" style="endArrow=block;html=1;" parent="1" source="ui" target="main" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe3" value="" style="endArrow=block;html=1;" parent="1" source="main" target="app" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe4" value="" style="endArrow=block;html=1;" parent="1" source="app" target="features" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe5" value="uses" style="endArrow=block;html=1;" parent="1" source="features" target="components" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe6" value="calls" style="endArrow=block;html=1;" parent="1" source="features" target="client" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="fe7" value="HTTP" style="endArrow=block;html=1;" parent="1" source="client" target="backend" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

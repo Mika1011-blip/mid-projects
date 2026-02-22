@@ -1,0 +1,61 @@
+<!-- templates/register.html -->
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+  <header id="main-header">
+    <div class="logo">RETINA-ANALYSIS</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+      <a href="{{ url_for('patients') }}">Patients</a>
+      <a href="{{ url_for('management') }}">Management</a>
+      <a href="{{ url_for('account') }}">Account</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    </nav>
+  </header>
+
+  <h1>Register</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <ul class="flashes">
+    {% for category, message in messages %}
+    <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
+  <div id="register-form-container">
+    <form class="register-form" action="{{ url_for('auth.register') }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <label for="register-first-name">First Name:</label>
+      <input type="text" id="register-first-name" name="first_name" required>
+
+      <label for="register-last-name">Last Name:</label>
+      <input type="text" id="register-last-name" name="last_name" required>
+
+      <label for="register-email">Email:</label>
+      <input type="email" id="register-email" name="email" required>
+
+      <label for="register-password">Password:</label>
+      <input type="password" id="register-password" name="password" required>
+
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>.</p>
+</body>
+
+</html>

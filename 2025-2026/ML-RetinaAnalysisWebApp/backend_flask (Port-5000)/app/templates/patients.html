@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #patient-app {
+            display: flex;
+            gap: var(--gap);
+            max-width: 1000px;
+            margin: var(--gap) auto;
+        }
+
+        .patient-block {
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            padding: var(--gap);
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+        }
+
+        .patient-block h2 {
+            margin-bottom: var(--gap);
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .patient-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+        }
+
+        .patient-form input,
+        .patient-form button {
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 0.5rem;
+            border: 1px solid var(--accent);
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        .patient-form button {
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .patient-form button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        #patient-results {
+            overflow-x: auto;
+            margin-top: var(--gap);
+        }
+
+        #patient-results table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #patient-results th,
+        #patient-results td {
+            border: 1px solid var(--accent);
+            padding: 0.5rem;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        #patient-results th {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        #patient-results button,
+        #patient-results a {
+            font-family: inherit;
+            font-size: 0.9rem;
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--accent);
+            background: var(--panel);
+            color: var(--text);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        #patient-results button:hover,
+        #patient-results a:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="main-header">
+        <div class="logo">RETINA-ANALYSIS</div>
+        <nav class="nav-bar">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+            <a href="{{ url_for('patients') }}">Patients</a>
+            <a href="{{ url_for('management') }}">Management</a>
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </nav>
+    </header>
+
+    <h1 style="text-align:center;">Patient Management</h1>
+    <div id="patient-app">
+
+        <!-- SEARCH BLOCK -->
+        <div class="patient-block" id="patient-search-block">
+            <h2>Search Patients</h2>
+            <form id="patient-search-form" class="patient-form">
+                <input name="email" placeholder="Email">
+                <input name="telephone" placeholder="Telephone">
+                <button type="submit">Search</button>
+            </form>
+
+            <div id="patient-results">
+                <p>Enter email and/or telephone, then click Search.</p>
+            </div>
+        </div>
+
+        <!-- ADD BLOCK -->
+        <div class="patient-block" id="patient-add-block">
+            <h2>Add Patient</h2>
+            <form id="patient-add-form" class="patient-form">
+                <input name="uid" placeholder="Caretaker UID" required>
+                <input name="name" placeholder="Name" required>
+                <input name="age" type="number" placeholder="Age" required>
+                <input name="sex" placeholder="Sex" required>
+                <input name="telephone" placeholder="Telephone" required>
+                <input name="email" placeholder="Email" required>
+                <button type="submit">Add Patient</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        const searchForm = document.getElementById('patient-search-form');
+        const resultsDiv = document.getElementById('patient-results');
+        const addForm = document.getElementById('patient-add-form');
+
+        searchForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(searchForm).entries());
+            fetch('/patient/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(r => r.json())
+                .then(renderResults)
+                .catch(_ => resultsDiv.innerHTML = '<p>No patients found.</p>');
+        });
+
+        addForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(addForm).entries());
+            data.age = parseInt(data.age, 10);
+            fetch('/patient/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(r => r.json())
+                .then(j => {
+                    if (j.success) {
+                        alert('Patient added');
+                        addForm.reset();
+                    } else {
+                        alert('Add failed: ' + (j.error || ''));
+                    }
+                });
+        });
+
+        function renderResults(data) {
+            if (!Array.isArray(data) || data.length === 0) {
+                resultsDiv.innerHTML = '<p>No patients found.</p>';
+                return;
+            }
+            const table = document.createElement('table');
+            const keys = ['name', 'email', 'telephone'];
+            const thead = table.createTHead();
+            const hr = thead.insertRow();
+            keys.forEach(k => {
+                const th = document.createElement('th');
+                th.textContent = k;
+                hr.appendChild(th);
+            });
+            ['View', 'Delete'].forEach(label => {
+                const th = document.createElement('th');
+                th.textContent = label;
+                hr.appendChild(th);
+            });
+            const tb = table.createTBody();
+            data.forEach(p => {
+                const row = tb.insertRow();
+                keys.forEach(k => {
+                    const td = row.insertCell();
+                    td.textContent = p[k] == null ? '' : p[k];
+                });
+                // View link
+                const viewTd = row.insertCell();
+                const a = document.createElement('a');
+                a.textContent = 'View';
+                a.href = `/patient/profile?id=${p.id}`;
+                viewTd.appendChild(a);
+                // Delete button
+                const delTd = row.insertCell();
+                const btn = document.createElement('button');
+                btn.textContent = 'Delete';
+                btn.addEventListener('click', () => {
+                    if (!confirm('Delete this patient?')) return;
+                    fetch('/patient/delete', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: p.id })
+                    })
+                        .then(r => r.json())
+                        .then(j => {
+                            if (j.success) row.remove();
+                            else alert('Delete failed');
+                        });
+                });
+                delTd.appendChild(btn);
+            });
+            resultsDiv.innerHTML = '';
+            resultsDiv.appendChild(table);
+        }
+    </script>
+</body>
+
+</html>

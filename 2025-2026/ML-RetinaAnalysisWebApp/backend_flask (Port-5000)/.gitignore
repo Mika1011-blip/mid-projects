@@ -1,0 +1,19 @@
+# Ignore virtual environments
+venv/
+env/
+flask_tf_env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore environment files
+*.env
+*.venv

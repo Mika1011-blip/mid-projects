@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>ChatGPT Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+  <header id="main-header">
+    <div class="logo">RETINA-ANALYSIS</div>
+    <nav class="nav-bar">
+      <a href="{{ url_for('index') }}">Home</a>
+      <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+      <a href="{{ url_for('patients') }}">Patients</a>
+      <a href="{{ url_for('management') }}">Management</a>
+      <a href="{{ url_for('account') }}">Account</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('register') }}">Register</a>
+    </nav>
+  </header>
+
+  <h1>ChatGPT Demo</h1>
+
+  <div id="chatWindow">
+    <!-- Messages will be appended here -->
+  </div>
+
+  <div id="controls">
+    <input id="msgInput" type="text" placeholder="Type your message…" autocomplete="off" />
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script>
+    const chatWindow = document.getElementById("chatWindow");
+    const msgInput = document.getElementById("msgInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    function appendMessage(sender, text) {
+      const div = document.createElement("div");
+      div.className = "message " + (sender === "You" ? "user" : "Advisor");
+      div.innerHTML = `
+        <span class="sender"><strong>${sender}:</strong></span>
+        <span class="text">${text.replace(/\n/g, "<br>")}</span>
+      `;
+      chatWindow.appendChild(div);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const text = msgInput.value.trim();
+      if (!text) return;
+      appendMessage("You", text);
+      msgInput.value = "";
+      sendBtn.disabled = true;
+
+      try {
+        const res = await fetch("/api/chatgpt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        if (data.reply) {
+          appendMessage("Advisor", data.reply);
+        } else {
+          appendMessage("Advisor", "Error: " + (data.error || "Unknown error"));
+        }
+      } catch (err) {
+        appendMessage("Advisor", "Error: " + err.message);
+      } finally {
+        sendBtn.disabled = false;
+        msgInput.focus();
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    msgInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // Focus the input on load
+    msgInput.focus();
+  </script>
+</body>
+
+</html>

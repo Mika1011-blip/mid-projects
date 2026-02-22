@@ -1,0 +1,56 @@
+project-tumor-detector/
+├─ docker-compose.yml
+├─ README.md
+├─ .env                       # shared env (optional)
+├─ .gitignore
+│
+├─ backend/
+│  ├─ Dockerfile
+│  ├─ requirements.txt
+│  ├─ app/
+│  │  ├─ main.py              # FastAPI entry
+│  │  ├─ core/
+│  │  │  ├─ config.py         # env/settings
+│  │  │  └─ logging.py
+│  │  ├─ api/
+│  │  │  └─ v1/
+│  │  │     ├─ routes/
+│  │  │     │  ├─ health.py
+│  │  │     │  └─ nifti.py    # upload + preview endpoints
+│  │  │     └─ router.py
+│  │  ├─ services/
+│  │  │  ├─ nifti_io.py       # load nifti, basic validation
+│  │  │  └─ preprocess.py     # normalize, slice extraction
+│  │  ├─ schemas/
+│  │  │  └─ nifti.py          # Pydantic response models
+│  │  └─ utils/
+│  │     ├─ image.py          # numpy -> png/base64 helpers
+│  │     └─ fs.py             # temp file helpers
+│  │
+│  ├─ tests/
+│  │  └─ test_health.py
+│  └─ data/                   # optional local dev samples (gitignored)
+│
+├─ frontend/
+│  ├─ Dockerfile
+│  ├─ package.json
+│  ├─ vite.config.ts
+│  ├─ tsconfig.json
+│  ├─ index.html
+│  └─ src/
+│     ├─ main.tsx
+│     ├─ App.tsx
+│     ├─ api/
+│     │  └─ client.ts         # fetch wrapper
+│     ├─ features/
+│     │  └─ niftiPreview/
+│     │     ├─ NiftiUploader.tsx
+│     │     ├─ NiftiPreview.tsx
+│     │     └─ types.ts
+│     ├─ components/
+│     │  └─ ui/               # shared UI bits
+│     └─ styles/
+│        └─ global.css
+│
+└─ scripts/
+   └─ dev.sh                  # optional helper commands

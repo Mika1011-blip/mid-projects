@@ -1,0 +1,17 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+#jupyterlab==4.2.5
+numpy==2.0.2
+pandas==2.2.2
+opencv-python==4.10.0.84
+nibabel==5.2.1
+SimpleITK==2.4.0
+scipy==1.14.1
+scikit-image==0.24.0
+matplotlib==3.9.2
+sqlalchemy
+psycopg[binary]
+pydantic-settings==2.7.1
+alembic==1.13.2
+boto3
+python-multipart==0.0.9

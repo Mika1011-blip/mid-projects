@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Management – Users</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #management-list-users {
+            max-width: 800px;
+            margin: var(--gap) auto;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            align-items: center;
+        }
+
+        .input-button-container {
+            display: flex;
+            gap: var(--gap);
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        #management-list-users input,
+        #management-list-users button {
+            font-family: inherit;
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--accent);
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        #management-list-users input {
+            flex: 1;
+            max-width: 400px;
+        }
+
+        #management-list-users input::placeholder {
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        #management-list-users button {
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        #management-list-users button:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        #management-table-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #management-table-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--gap);
+        }
+
+        #management-table-container th,
+        #management-table-container td {
+            border: 1px solid var(--accent);
+            padding: 0.5rem;
+            text-align: left;
+            font-family: inherit;
+        }
+
+        #management-table-container th {
+            background: var(--accent);
+            color: var(--bg);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="main-header">
+        <div class="logo">RETINA-ANALYSIS</div>
+        <nav class="nav-bar">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+            <a href="{{ url_for('patients') }}">Patients</a>
+            <a href="{{ url_for('management') }}">Management</a>
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </nav>
+    </header>
+
+    <h1>Management – Users</h1>
+
+    <div id="management-list-users">
+        <div class="input-button-container">
+            <input type="email" id="search-email" name="email" placeholder="Search by email">
+            <button id="management-fetch-btn">Search Users</button>
+        </div>
+        <div id="management-table-container">
+            <p>Click "Search Users” to load the list.</p>
+        </div>
+    </div>
+
+    <script>
+        const btn = document.getElementById('management-fetch-btn');
+        const container = document.getElementById('management-table-container');
+        const email = document.getElementById('search-email');
+        console.log(email.value);
+
+        btn.addEventListener('click', () => {
+            container.innerHTML = '<p>Loading…</p>';
+            fetch('/management/list_users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.value })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error(res.statusText);
+                    return res.json();
+                })
+                .then(data => renderTable(data))
+                .catch(err => {
+                    container.innerHTML = `<p>No users found</p>`;
+                });
+        });
+
+        function renderTable(data) {
+            if (!Array.isArray(data) || data.length === 0) {
+                container.innerHTML = '<p>No users found.</p>';
+                return;
+            }
+
+            const keys = Object.keys(data[0]);
+            const displayKeys = keys.filter(k => k !== 'role');
+            const table = document.createElement('table');
+
+            // Header
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            displayKeys.forEach(key => {
+                const th = document.createElement('th');
+                th.textContent = key;
+                headerRow.appendChild(th);
+            });
+            // Role header
+            const roleTh = document.createElement('th');
+            roleTh.textContent = 'Role';
+            headerRow.appendChild(roleTh);
+            // Actions header
+            const actionTh = document.createElement('th');
+            actionTh.textContent = 'Action';
+            headerRow.appendChild(actionTh);
+
+            // Body
+            const tbody = table.createTBody();
+            data.forEach(user => {
+                const row = tbody.insertRow();
+
+                // existing columns
+                displayKeys.forEach(key => {
+                    const td = row.insertCell();
+                    td.textContent = user[key] == null ? '' : user[key];
+                });
+
+                // Role cell: dropdown + Update button
+                // Create Role cell: dropdown + Update button
+                const roleTd = row.insertCell();
+
+                // Container to neatly align select and button
+                const container = document.createElement('div');
+                Object.assign(container.style, {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                });
+
+                // Styled dropdown (minimalist and robotic)
+                const roleSelect = document.createElement('select');
+                roleSelect.innerHTML = `
+  <option value="1" ${user.role == 1 ? 'selected' : ''}>Admin</option>
+  <option value="0" ${user.role == 0 ? 'selected' : ''}>Regular</option>
+`;
+                Object.assign(roleSelect.style, {
+                    border: 'none',
+                    backgroundColor: 'transparent',
+                    color: '#555',
+                    fontFamily: 'monospace',
+                    fontSize: '0.9rem',
+                    padding: '2px 4px',
+                    outline: 'none',
+                    cursor: 'pointer',
+                    appearance: 'none',
+                });
+
+                // Small minimalist Update button
+                const updateBtn = document.createElement('button');
+                updateBtn.textContent = 'Update';
+                Object.assign(updateBtn.style, {
+                    border: 'none',
+                    backgroundColor: '#f0f0f0',
+                    color: '#444',
+                    fontFamily: 'monospace',
+                    fontSize: '0.8rem',
+                    padding: '4px 8px',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                });
+                updateBtn.addEventListener('mouseenter', () => {
+                    updateBtn.style.backgroundColor = '#e0e0e0';
+                });
+                updateBtn.addEventListener('mouseleave', () => {
+                    updateBtn.style.backgroundColor = '#f0f0f0';
+                });
+
+                updateBtn.addEventListener('click', () => {
+                    fetch('/management/update_user', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            uid: user.uid,
+                            role: parseInt(roleSelect.value, 10),
+                        }),
+                    })
+                        .then(res => res.json())
+                        .then(resp => {
+                            alert(resp.success ? 'Role updated successfully' : ('Failed: ' + (resp.error || 'unknown error')));
+                        })
+                        .catch(err => alert('Error: ' + err.message));
+                });
+
+                // Append elements to container
+                container.appendChild(roleSelect);
+                container.appendChild(updateBtn);
+
+                // Append container to table cell
+                roleTd.appendChild(container);
+                // Delete button cell
+                const actionTd = row.insertCell();
+                const delBtn = document.createElement('button');
+                delBtn.textContent = 'Delete';
+                delBtn.addEventListener('click', () => {
+                    if (!confirm(`Delete user ${user.email}?`)) return;
+                    fetch('/management/remove_user', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ uid: user.uid })
+                    })
+                        .then(res => res.json())
+                        .then(resp => {
+                            if (resp.success) {
+                                row.remove();
+                            } else {
+                                alert('Failed to delete user');
+                            }
+                        })
+                        .catch(err => alert('Error: ' + err.message));
+                });
+                actionTd.appendChild(delBtn);
+            });
+
+            // render into container
+            container.innerHTML = '';
+            container.appendChild(table);
+        }
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+﻿# Root monorepo ignore
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+.vscode/
+!.vscode/extensions.json
+.idea/
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/*.pyd
+**/*.pyo
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.ipynb_checkpoints/
+**/.coverage
+**/.coverage.*
+**/.venv/
+**/venv/
+**/env/
+**/ENV/
+**/*.egg-info/
+
+# Node/web
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/build/
+**/.next/
+**/.turbo/
+**/.pnpm-store/
+**/.npm/
+**/.yarn/
+**/coverage/
+
+# Environment & secrets
+**/.env
+**/.env.*
+**/serviceAccountKey.json
+**/*.pem
+**/*.key
+
+# ML/data artifacts
+**/*.nii
+**/*.nii.gz
+**/*.h5
+**/*.hdf5
+**/*.onnx
+**/*.pt
+**/*.pth
+**/*.joblib
+**/*.pkl
+**/*.pickle
+
+# Project-specific heavy data folders
+2025-2026/ML-tumorDetectorApp/backend/data/
+2025-2026/ML-tumorDetectorApp/backend/app/dataset/
+2025-2026/analyze_bienetre/ressources/data/
+2025-2026/analyze_bienetre/ressources/out_data/
+2025-2026/analyze_bienetre/ressources/data_out/
+2025-2026/analyze_bienetre/models/
+2025-2026/analyze_bienetre/archives/
+2025-2026/analyze_bienetre/catboost_info/
+
+# Temporary git backups used during migration
+**/.git.bak/
+**/.git_backup/
+**/.git__backup__/
+
+# Retina app generated assets
+2025-2026/ML-RetinaAnalysisWebApp/backend_flask (Port-5000)/RA_webapp.db
+2025-2026/ML-RetinaAnalysisWebApp/backend_flask (Port-5000)/accounts_test.txt
+2025-2026/ML-RetinaAnalysisWebApp/backend_flask (Port-5000)/app/static/uploads/
+2025-2026/ML-RetinaAnalysisWebApp/backend_flask (Port-5000)/app/static/processed/

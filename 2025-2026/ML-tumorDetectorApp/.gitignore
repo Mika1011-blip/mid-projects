@@ -1,0 +1,123 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+*.tmp
+*.bak
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.env
+.env.*
+venv/
+.venv/
+env/
+ENV/
+backend/venv/
+
+# Jupyter outputs
+*.nbconvert.ipynb
+
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+.npm/
+.pnpm-store/
+.yarn/
+.pnp.*
+*.local
+
+# ML data / artifacts
+backend/app/dataset/**
+!backend/app/dataset/README.md
+*.nii
+*.nii.gz
+*.h5
+*.hdf5
+*.onnx
+*.pt
+*.pth
+*.joblib
+*.pkl
+*.pickle
+
+
+# =========================
+# Python (backend)
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Backend data (local dev only)
+backend/data/
+
+# =========================
+# Node / Frontend
+# =========================
+node_modules/
+dist/
+build/
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+
+# =========================
+# Docker
+# =========================
+*.log
+docker-compose.override.yml

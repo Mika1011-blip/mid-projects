@@ -1,0 +1,225 @@
+/* Robotic, single-color, no rounding */
+:root {
+    --bg: #D9D9D9;
+
+    --panel: #d4d4d4;
+
+    --text: #1E1E1E;
+
+    --accent: #1E1E1E;
+
+    --gap: 1rem;
+    --shadow: none;
+
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Courier New", Courier, monospace;
+    padding: var(--gap);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: var(--gap);
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+}
+
+.section {
+    background: var(--panel);
+    padding: var(--gap);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    /* hard edges */
+}
+
+/* Upload panel */
+#uploadSection input,
+#uploadSection button {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+}
+
+#uploadSection button {
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+#uploadSection button:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+#resultArea img {
+    display: block;
+    max-width: 100%;
+    margin-top: var(--gap);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+}
+
+/* Chat panel */
+#chatWindow {
+    background: var(--panel);
+    padding: var(--gap);
+    border: 1px solid var(--accent);
+    border-radius: 0;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-bottom: var(--gap);
+}
+
+.message .sender {
+    display: block;
+    color: var(--accent);
+}
+
+.message .text {
+    white-space: pre-wrap;
+}
+
+#controls {
+    display: flex;
+    margin-top: var(--gap);
+}
+
+#msgInput {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-right: none;
+    border-radius: 0;
+    font-family: inherit;
+}
+
+#sendBtn {
+    padding: 0 1rem;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--accent);
+    border-left: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+#sendBtn:hover {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+#sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spinner {
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    border-top: 6px solid #1E1E1E;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 0.8s linear infinite;
+    margin: 1em auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* Login form container styling */
+#login-form-container {
+    background: var(--panel);
+    padding: var(--gap);
+    border: 1px solid var(--accent);
+    max-width: 400px;
+    margin: var(--gap) auto;
+    border-radius: 0;
+}
+#login-form-container .login-form input,
+#login-form-container .login-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--gap);
+}
+
+/* Register form container styling */
+#register-form-container {
+    background: var(--panel);
+    padding: var(--gap);
+    border: 1px solid var(--accent);
+    max-width: 400px;
+    margin: var(--gap) auto;
+    border-radius: 0;
+}
+#register-form-container .register-form input,
+#register-form-container .register-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: var(--gap);
+}
+/* === Header & Nav Bar === */
+#main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    padding: 0.75rem var(--gap);
+    margin-bottom: var(--gap);
+}
+
+#main-header .logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--accent);
+    font-family: "Courier New", Courier, monospace;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-bar a {
+    text-decoration: none;
+    color: var(--text);
+    font-family: inherit;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--accent);
+    background: var(--panel);
+    transition: background 0.1s, color 0.1s;
+    border-radius: 0;
+}
+
+.nav-bar a:hover {
+    background: var(--accent);
+    color: var(--bg);
+}

@@ -1,0 +1,131 @@
+<!-- templates/account.html -->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Account page form container */
+        #account-container {
+            background: var(--panel);
+            padding: var(--gap);
+            border: 1px solid var(--accent);
+            max-width: 500px;
+            margin: var(--gap) auto;
+            border-radius: 0;
+        }
+
+        #account-container h2 {
+            margin-bottom: var(--gap);
+        }
+
+        #account-container .field {
+            margin-bottom: var(--gap);
+        }
+
+        #account-container .field label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        #account-container .field span {
+            display: block;
+            padding: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--accent);
+            border-radius: 0;
+        }
+
+        /* Logout button styling */
+        #logoutBtn {
+            padding: 0.5rem 1rem;
+            /* comfortable click area */
+            background: var(--panel);
+            /* panel background */
+            color: var(--text);
+            /* text color */
+            border: 1px solid var(--accent);
+            /* accent border */
+            border-radius: 0;
+            /* hard corners */
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: background 0.1s, color 0.1s;
+            float: right;
+            margin: var(--gap) 0 var(--gap) var(--gap);
+            /* top/right/bottom/left */
+            /* space above/below */
+        }
+
+        .logout-container {
+            display: flex;
+            justify-content: flex-end;
+            /* push children to the right */
+            width: 100%;
+            margin-top: var(--gap);
+        }
+
+        #logoutBtn:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+    </style>
+</head>
+
+<body>
+    <header id="main-header">
+        <div class="logo">RETINA-ANALYSIS</div>
+        <nav class="nav-bar">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+            <a href="{{ url_for('patients') }}">Patients</a>
+            <a href="{{ url_for('management') }}">Management</a>
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </nav>
+    </header>
+
+    <h1>My Account</h1>
+
+    {% if session.user_data %}
+    <div id="account-container">
+        <h2>Profile Details</h2>
+
+        <div class="field">
+            <label>User ID</label>
+            <span>{{ session.user_data.uid }}</span>
+        </div>
+
+        <div class="field">
+            <label>Name</label>
+            <span>{{ session.user_data.name }}</span>
+        </div>
+
+        <div class="field">
+            <label>Email</label>
+            <span>{{ session.user_data.email }}</span>
+        </div>
+        <div class="logout-container">
+            <button id="logoutBtn">Log out</button>
+        </div>
+
+    </div>
+
+    {% else %}
+    <p>You are not logged in. <a href="{{ url_for('auth.login') }}">Login here</a>.</p>
+    {% endif %}
+    <script>
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.addEventListener('click', function () {
+            window.location.href = "{{ url_for('auth.logout') }}";
+        });
+    </script>
+</body>
+
+</html>

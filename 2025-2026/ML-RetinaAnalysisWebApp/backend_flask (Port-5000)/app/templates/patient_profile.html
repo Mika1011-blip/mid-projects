@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #profile-app {
+            max-width: 600px;
+            margin: var(--gap) auto;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            padding: var(--gap);
+        }
+
+        #profile-app h1 {
+            text-align: center;
+            margin-bottom: var(--gap);
+        }
+
+        #profile-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #profile-table th,
+        #profile-table td {
+            border: 1px solid var(--accent);
+            padding: 0.5rem;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        #profile-table th {
+            background: var(--accent);
+            color: var(--bg);
+            width: 30%;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="main-header">
+        <div class="logo">RETINA-ANALYSIS</div>
+        <nav class="nav-bar">
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('chatgpt') }}">ChatGPT</a>
+            <a href="{{ url_for('patients') }}">Patients</a>
+            <a href="{{ url_for('management') }}">Management</a>
+            <a href="{{ url_for('account') }}">Account</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </nav>
+    </header>
+
+    <div id="profile-app">
+        <h1>Patient Profile</h1>
+        <table id="profile-table">
+            <!-- Filled by JS -->
+        </table>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
+        const table = document.getElementById('profile-table');
+
+        if (!id) {
+            table.innerHTML = '<tr><td>No ID provided</td></tr>';
+        } else {
+            // we search by telephone or email? here we assume searching by uid not available
+            fetch('/patient/search', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telephone: '', email: '' })
+            })
+                // Instead, you should have an API to fetch by id specifically.
+                .then(r => r.json())
+                .then(arr => {
+                    const p = arr.find(x => x.id == id);
+                    if (!p) {
+                        table.innerHTML = '<tr><td>Not found</td></tr>';
+                        return;
+                    }
+                    // render each key/value
+                    Object.entries(p).forEach(([k, v]) => {
+                        const row = table.insertRow();
+                        const th = document.createElement('th');
+                        th.textContent = k;
+                        const td = row.insertCell();
+                        td.textContent = v == null ? '' : v;
+                    });
+                });
+        }
+    </script>
+</body>
+
+</html>
