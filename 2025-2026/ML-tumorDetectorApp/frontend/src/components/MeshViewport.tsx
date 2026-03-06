@@ -13,11 +13,18 @@ export type MeshLayerPayload = {
   modality?: string
 }
 
+export type MeshRotateDirection = 'left' | 'right' | 'up' | 'down'
+export type MeshRotationCommand = {
+  id: number
+  direction: MeshRotateDirection
+}
+
 export function MeshViewport({
   baseLayer,
   overlayLayer,
   baseOpacity,
   overlayOpacity,
+  rotationCommand = null,
   loading = false,
   controlsDisabled = false,
 }: {
@@ -25,6 +32,7 @@ export function MeshViewport({
   overlayLayer: MeshLayerPayload | null
   baseOpacity: number
   overlayOpacity: number
+  rotationCommand?: MeshRotationCommand | null
   loading?: boolean
   controlsDisabled?: boolean
 }) {
@@ -40,6 +48,33 @@ export function MeshViewport({
   const centerRef = useRef(new THREE.Vector3(0, 0, 0))
   const [interactionMode, setInteractionMode] = useState<'orbit' | 'axis'>('orbit')
   const [showAxes, setShowAxes] = useState(true)
+
+  const rotateViewByStep = useCallback((direction: MeshRotateDirection) => {
+    const camera = cameraRef.current
+    const controls = controlsRef.current
+    if (!camera || !controls) return
+
+    const target = controls.target.clone()
+    const offset = camera.position.clone().sub(target)
+    const spherical = new THREE.Spherical().setFromVector3(offset)
+    const step = Math.PI / 2
+    const eps = 0.0001
+
+    if (direction === 'left') {
+      spherical.theta += step
+    } else if (direction === 'right') {
+      spherical.theta -= step
+    } else if (direction === 'up') {
+      spherical.phi = clampNumber(spherical.phi - step, eps, Math.PI - eps)
+    } else if (direction === 'down') {
+      spherical.phi = clampNumber(spherical.phi + step, eps, Math.PI - eps)
+    }
+
+    offset.setFromSpherical(spherical)
+    camera.position.copy(target.clone().add(offset))
+    camera.lookAt(target)
+    controls.update()
+  }, [])
 
   const applyCameraPreset = useCallback(() => {
     const camera = cameraRef.current
@@ -273,6 +308,11 @@ export function MeshViewport({
     }
   }, [showAxes])
 
+  useEffect(() => {
+    if (!rotationCommand) return
+    rotateViewByStep(rotationCommand.direction)
+  }, [rotationCommand, rotateViewByStep])
+
   return (
     <div className="mesh-viewer">
       <div className="mesh-canvas-wrap">
@@ -303,6 +343,10 @@ export function MeshViewport({
       </div>
     </div>
   )
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value))
 }
 
 function buildGeometry(layer: MeshLayerPayload) {

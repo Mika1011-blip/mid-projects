@@ -55,20 +55,36 @@ function getInitialTheme(): Theme {
   return 'light'
 }
 
+function isLocalLoopbackHost(hostname: string) {
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]'
+}
+
+function normalizeLocalApiBaseToIpv4(base: string) {
+  try {
+    const parsed = new URL(base)
+    if (!isLocalLoopbackHost(parsed.hostname)) {
+      return base
+    }
+    parsed.hostname = '127.0.0.1'
+    return parsed.toString().replace(/\/$/, '')
+  } catch {
+    return base
+      .replace('[::1]', '127.0.0.1')
+      .replace('::1', '127.0.0.1')
+      .replace('localhost', '127.0.0.1')
+  }
+}
+
 function resolveApiBase() {
   const configured = import.meta.env.VITE_API_BASE as string | undefined
+  const browserHost = typeof window !== 'undefined' ? window.location.hostname : ''
+  const fallbackHost = browserHost && !isLocalLoopbackHost(browserHost) ? browserHost : '127.0.0.1'
   const fallback =
     typeof window !== 'undefined'
-      ? `${window.location.protocol}//${window.location.hostname}:8000/api/v1`
+      ? `${window.location.protocol}//${fallbackHost}:8000/api/v1`
       : 'http://127.0.0.1:8000/api/v1'
   const rawBase = configured?.trim() ? configured.trim() : fallback
-
-  // Windows/WSL Docker setups may resolve localhost to ::1 and stall;
-  // prefer IPv4 loopback in local browser development.
-  if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-    return rawBase.replace('localhost:8000', '127.0.0.1:8000')
-  }
-  return rawBase
+  return normalizeLocalApiBaseToIpv4(rawBase)
 }
 
 function parseRouteFromHash(hashValue: string): AppRoute {

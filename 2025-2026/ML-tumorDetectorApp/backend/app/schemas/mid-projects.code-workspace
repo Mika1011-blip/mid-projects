@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../.."
+		},
+		{
+			"path": "../../../../../../collab-projects"
+		}
+	],
+	"settings": {
+		"sqltools.connections": []
+	}
+}

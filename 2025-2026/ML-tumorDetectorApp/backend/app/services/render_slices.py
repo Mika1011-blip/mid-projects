@@ -9,6 +9,7 @@ from nibabel.orientations import aff2axcodes
 
 
 Axis = Literal["x", "y", "z"]
+NiftiSource = str | Path | nib.spatialimages.SpatialImage
 
 _AXIS_TO_DIM = {"x": 0, "y": 1, "z": 2}
 
@@ -35,8 +36,16 @@ class AnnotationResult:
     used_windowing: bool
     window: dict | None
 
-def _load_volume(nifti_path: str | Path, volume_index: int = 0):
-    nifti = nib.load(str(nifti_path))
+
+def _load_volume(nifti_source: NiftiSource, volume_index: int = 0):
+    if isinstance(nifti_source, nib.spatialimages.SpatialImage):
+        nifti = nifti_source
+    elif isinstance(nifti_source, (str, Path)):
+        nifti = nib.load(str(nifti_source))
+    else:
+        raise TypeError(
+            "nifti_source must be a path-like string/Path or a nibabel SpatialImage"
+        )
     shape = list(nifti.shape)
 
     if len(shape) < 3:
@@ -83,7 +92,7 @@ def _compute_window(
     return lo, hi, window
 
 def render_slices_rgb(
-        nifti_path : str | Path,
+        nifti_path : NiftiSource,
         *,
         axis:Axis="z",
         preview_index : int | None = None,
@@ -174,7 +183,7 @@ def render_slices_rgb(
                             )
 
 def render_slices_annotation(
-        nifti_path: str | Path,
+        nifti_path: NiftiSource,
         *,
         axis: Axis = "z",
         preview_index: int | None = None,
